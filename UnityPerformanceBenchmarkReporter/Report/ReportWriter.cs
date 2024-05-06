@@ -619,10 +619,8 @@ namespace UnityPerformanceBenchmarkReporter.Report
             foreach (var performanceTestRunResult in perfTestRunResults)
             {
                 runsString.Append(
-                    string.Format("['{0}','{1}','{2}'], ",
-                        performanceTestRunResult.ResultName,
-                        string.Format("{0:MM/dd/yyyy}", performanceTestRunResult.StartTime),
-                        string.Format("{0:T}", performanceTestRunResult.StartTime)));
+                    string.Format("['{0}'], ",
+                        performanceTestRunResult.ResultName));
             }
 
             // Remove trailing comma and space
