@@ -81,6 +81,9 @@ namespace UnityPerformanceBenchmarkReporter
             optionsSet.Add("failonbaseline",
                 "Enable return '1' by the reporter if a baseline is passed in and one or more matching configs is out of threshold. Disabled is default. Use option to enable, or use option and append '-' to explicitly disable.",
                 option => performanceBenchmark.FailOnBaseline = option != null);
+            optionsSet.Add<double>("threshold|t=",
+                "Set the threshold for the comparison of the metrics. Default is 0.05. The threshold is a percentage value. If the difference between the baseline and the result is greater than the threshold, the test will fail.",
+                option => UnityPerformanceBenchmarkReporter.Entities.New.SampleGroup.DefaultThreshold = option);
             return optionsSet;
         }
 

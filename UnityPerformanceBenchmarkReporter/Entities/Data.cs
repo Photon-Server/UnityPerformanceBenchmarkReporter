@@ -15,10 +15,12 @@ namespace UnityPerformanceBenchmarkReporter.Entities.New
     [Serializable]
     public class SampleGroup
     {
+        public static double DefaultThreshold = 0.15;
+        
         public string Name;
         public SampleUnit Unit;
         public bool IncreaseIsBetter;
-        public double Threshold = 0.15;
+        public double Threshold = DefaultThreshold;
         public List<double> Samples = new List<double>();
         public double Min;
         public double Max;
