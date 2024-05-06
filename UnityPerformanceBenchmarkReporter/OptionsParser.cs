@@ -84,6 +84,9 @@ namespace UnityPerformanceBenchmarkReporter
             optionsSet.Add<double>("threshold|t=",
                 "Set the threshold for the comparison of the metrics. Default is 0.05. The threshold is a percentage value. If the difference between the baseline and the result is greater than the threshold, the test will fail.",
                 option => UnityPerformanceBenchmarkReporter.Entities.New.SampleGroup.DefaultThreshold = option);
+            optionsSet.Add("openreport",
+                "Open the report in the default browser after the report is generated.",
+                option => performanceBenchmark.OpenReport = option != null);
             return optionsSet;
         }
 

@@ -111,7 +111,7 @@ namespace UnityPerformanceBenchmarkReporter
 
             var reportWriter = new ReportWriter(performanceBenchmark.TestRunMetadataProcessor);
 
-            reportWriter.WriteReport(
+            var path = reportWriter.WriteReport(
                 performanceTestResults,
                 performanceBenchmark.SigFig,
                 performanceBenchmark.ReportDirPath,
@@ -120,6 +120,18 @@ namespace UnityPerformanceBenchmarkReporter
             WriteRegressedKnownTestsAndMetricsToConsole(performanceTestResults, performanceBenchmark);
             int result = WriteFailedTestsAndMetricsToConsole(performanceTestResults, performanceBenchmark);
             WriteLine($"Finished with Result {result}");
+
+            if (performanceBenchmark.OpenReport)
+            {
+                // fire up the report in the browser, using shell execute
+                var psi = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = path,
+                    UseShellExecute = true
+                };
+                System.Diagnostics.Process.Start(psi);
+            }
+            
             return result;
         }
 

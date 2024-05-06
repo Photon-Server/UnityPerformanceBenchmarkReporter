@@ -44,7 +44,7 @@ namespace UnityPerformanceBenchmarkReporter.Report
             testRunMetadataProcessor = metadataProcessor;
         }
 
-        public void WriteReport(PerformanceTestRunResult[] results, uint sigFig = 2,
+        public string WriteReport(PerformanceTestRunResult[] results, uint sigFig = 2,
             string reportDirectoryPath = null, bool hasBenchmarkResults = false)
         {
             if (results != null && results.Length > 0)
@@ -61,12 +61,15 @@ namespace UnityPerformanceBenchmarkReporter.Report
                 var reportDirectory = EnsureBenchmarkDirectory(reportDirectoryPath);
                 WriteEmbeddedResourceFiles(reportDirectory);
                 var benchmarkReportFile = GetBenchmarkReportFile(reportDirectory);
+                var benchmarkReportFileFullName = benchmarkReportFile.Name;
                 using (var rw = new StreamWriter(benchmarkReportFile))
                 {
                     System.Console.WriteLine($"Writing Report To: {reportDirectory.FullName}");
                     System.Console.WriteLine($"");
                     WriteHtmlReport(rw);
                 }
+
+                return benchmarkReportFileFullName;
             }
             else
             {
