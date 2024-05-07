@@ -38,6 +38,7 @@ namespace UnityPerformanceBenchmarkReporter
 
         public bool ResultFilesExist => ResultFilePaths.Any() || ResultDirectoryPaths.Any();
         public bool OpenReport { get; set; }
+        public bool ExportCSV { get; set; }
 
         public List<string> IgnoredMetrics = new List<string>();
 

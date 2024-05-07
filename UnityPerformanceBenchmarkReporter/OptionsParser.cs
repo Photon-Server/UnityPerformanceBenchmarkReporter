@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Mono.Options;
 
@@ -87,6 +88,9 @@ namespace UnityPerformanceBenchmarkReporter
             optionsSet.Add("openreport",
                 "Open the report in the default browser after the report is generated.",
                 option => performanceBenchmark.OpenReport = option != null);
+            optionsSet.Add("reportcsv",
+                "Export the report data to a csv file.",
+                option => performanceBenchmark.ExportCSV = option != null);
             return optionsSet;
         }
 

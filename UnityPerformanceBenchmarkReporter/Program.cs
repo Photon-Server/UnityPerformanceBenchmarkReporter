@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using UnityPerformanceBenchmarkReporter.Entities;
 using UnityPerformanceBenchmarkReporter.Report;
 
@@ -130,6 +132,11 @@ namespace UnityPerformanceBenchmarkReporter
                     UseShellExecute = true
                 };
                 System.Diagnostics.Process.Start(psi);
+            }
+
+            if (performanceBenchmark.ExportCSV)
+            {
+                ExportCSV(performanceTestResults, Path.GetDirectoryName(path) + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(path) + ".csv");
             }
             
             return result;
@@ -280,6 +287,68 @@ namespace UnityPerformanceBenchmarkReporter
         {
             Console.Write(new string('\t', indentLevel));
             Console.WriteLine(format, args);
+        }
+        
+        private static void ExportCSV(PerformanceTestRunResult[] runResults, string path)
+        {
+            var sb = new StringBuilder();
+            const char sep = ',';
+
+            string header = string.Join(sep, new[]
+            {
+                "Test Name",
+                "Run Name",
+                "Version",
+                "Sample Group Name",
+                "Unit",
+                "Increase Is Better",
+                "Min",
+                "Max",
+                "Median",
+                "Average",
+                "Standard Deviation",
+                "Sum",
+            });
+            
+            sb.AppendLine(header);
+            
+            var byTestName = runResults
+                .SelectMany(runResult => runResult.TestResults.Select(test => (runResult, test)))
+                .GroupBy(x => x.test.TestName);
+            
+            foreach (var testGroup in byTestName)
+            {
+                foreach (var (runResult, test) in testGroup)
+                {
+                    foreach (var sampleGroup in test.SampleGroupResults)
+                    {
+                        sb.Append(EscapeCSV(test.TestName)).Append(sep);
+                        sb.Append(EscapeCSV(runResult.ResultName)).Append(sep);
+                        sb.Append(EscapeCSV(test.TestVersion)).Append(sep);
+                        sb.Append(EscapeCSV(sampleGroup.SampleGroupName)).Append(sep);
+                        sb.Append(EscapeCSV(sampleGroup.SampleUnit)).Append(sep);
+                        sb.Append(sampleGroup.IncreaseIsBetter).Append(sep);
+                        sb.Append(InvariantCulture(sampleGroup.Min)).Append(sep);
+                        sb.Append(InvariantCulture(sampleGroup.Max)).Append(sep);
+                        sb.Append(InvariantCulture(sampleGroup.Median)).Append(sep);
+                        sb.Append(InvariantCulture(sampleGroup.Average)).Append(sep);
+                        sb.Append(InvariantCulture(sampleGroup.StandardDeviation)).Append(sep);
+                        sb.Append(InvariantCulture(sampleGroup.Sum)).Append(sep);
+                        sb.AppendLine();
+                    }
+                }
+            }
+            
+            File.WriteAllText(path, sb.ToString());
+
+            string EscapeCSV(string str)
+            {
+                return str.Contains(sep) || str.Contains('"') || str.Contains('\n')
+                    ? $"\"{str.Replace("\"", "\"\"")}\""
+                    : str;
+            }
+            
+            string InvariantCulture(double value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 }
